@@ -114,7 +114,7 @@ docker exec -it consulclient01 sh
 consul reload
 ```
 
-16. Searching the services registry
+16. Searching the services registry using DNS tools (dig) 
 
 ```
 apk -U add bind-tools
@@ -134,4 +134,29 @@ curl localhost:8500/v1/catalog/services
 ```
 docker exec -it consulserver01 sh
 consul catalog nodes -service nginx
+consul catalog nodes -detailed
+```
+
+19. Registry consul client and join on the cluster with flag -retry-join
+
+```
+docker exec -it consulclient02 sh
+mkdir /var/lib/consul
+ifconfig //getip
+consul agent -bind=172.21.0.6 -data-dir=/var/lib/consul -config-dir=/etc/consul.d -retry-join=172.21.0.2 -retry-join=172.21.0.3 -retry-join=172.21.0.4
+```
+
+20. Viewing the consul members
+
+```
+docker exec -it consulclient02 sh
+consul members
+```
+
+21. Viewing all clients of nginx service
+
+```
+docker exec -it consulclient02 sh
+apk -U add bind-tools
+dig @localhost -p 8600 nginx.service.consul
 ```
