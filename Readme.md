@@ -106,3 +106,32 @@ docker exec -it consulclient01 sh
 consul members
 consul join 172.21.0.4
 ```
+
+15. Reload services:
+
+```
+docker exec -it consulclient01 sh
+consul reload
+```
+
+16. Searching the services registry
+
+```
+apk -U add bind-tools
+dig @localhost -p 8600 SRV
+dig @localhost -p 8600 nginx.service.consul
+```
+
+17. Searching the services using the API of consul:
+
+```
+docker exec -it consulserver01 sh
+curl localhost:8500/v1/catalog/services
+```
+
+18. Searching the services using the CLI of consul:
+
+```
+docker exec -it consulserver01 sh
+consul catalog nodes -service nginx
+```
