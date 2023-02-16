@@ -35,7 +35,7 @@ curl localhost:8500/v1/catalog/nodes
 apk -U add bind-tools
 ```
 
-7. Now you can consul all nodes using DNS tools (dig)
+7. Now you can consul all nodes using DNS tools (dig):
 
 ```
 dig @localhost -p 8600
@@ -43,7 +43,7 @@ dig @localhost -p 8600 consul01.node.consul
 dig @localhost -p 8600 consul01.node.consul +short
 ```
 
-8. View consul members
+8. View consul members:
 
 ```
 consul members
@@ -80,7 +80,7 @@ mkdir /var/lib/consul
 consul agent -server -bootstrap-expect=3 -node=consulserver03 -bind=172.21.0.2 -data-dir=/var/lib/consul -config-dir=/etc/consul.d
 ```
 
-12. Join consul servers
+12. Join consul servers:
 
 ```
 docker exec -it consulserver03 sh
@@ -90,7 +90,7 @@ docker exec -it consulserver01 sh
 consul join 172.21.0.3 //ip consulserver02
 ```
 
-13. Configuring first consul client
+13. Configuring first consul client:
 
 ```
 docker exec -it consulclient01 sh
@@ -99,7 +99,7 @@ ifconfig //get ip
 consul agent -bind=172.21.0.5 -data-dir=/var/lib/consul -config-dir=/etc/consul.d
 ```
 
-14. Join client in the cluster
+14. Join client in the cluster:
 
 ```
 docker exec -it consulclient01 sh
@@ -114,7 +114,7 @@ docker exec -it consulclient01 sh
 consul reload
 ```
 
-16. Searching the services registry using DNS tools (dig) 
+16. Searching the services registry using DNS tools (dig):
 
 ```
 apk -U add bind-tools
@@ -137,7 +137,7 @@ consul catalog nodes -service nginx
 consul catalog nodes -detailed
 ```
 
-19. Registry consul client and join on the cluster with flag -retry-join
+19. Registry consul client and join on the cluster with flag -retry-join:
 
 ```
 docker exec -it consulclient02 sh
@@ -146,17 +146,63 @@ ifconfig //getip
 consul agent -bind=172.21.0.6 -data-dir=/var/lib/consul -config-dir=/etc/consul.d -retry-join=172.21.0.2 -retry-join=172.21.0.3 -retry-join=172.21.0.4
 ```
 
-20. Viewing the consul members
+20. Viewing the consul members:
 
 ```
 docker exec -it consulclient02 sh
 consul members
 ```
 
-21. Viewing all clients of nginx service
+21. Viewing all clients of nginx service:
 
 ```
 docker exec -it consulclient02 sh
 apk -U add bind-tools
+dig @localhost -p 8600 nginx.service.consul
+```
+
+22. Installing and testing nginx in consul client 01:
+
+```
+docker exec -it consulclient01 sh
+apk -U add nginx
+nginx
+ps
+curl localhost
+```
+
+
+23. Altering the root page of nginx
+
+```
+docker exec -it consulclient01 sh
+apk -U add vim
+mkdir /usr/share/nginx/html -p
+vim /etc/nginx/http.d/default.conf
+Erase this block:
+# Everuthing is a 404
+location / {
+    return 404;
+}
+
+Add this:
+root /usr/share/nginx/html
+
+```
+
+24. Creating the index.html default of nginx
+
+```
+vim /usr/share/nginx/html/index.html
+Put this content inside of file:
+Hello
+```
+
+
+25. Restarting nginx server
+
+```
+nginx -s reload 
+curl localhost
 dig @localhost -p 8600 nginx.service.consul
 ```
