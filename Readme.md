@@ -89,3 +89,20 @@ exit
 docker exec -it consulserver01 sh
 consul join 172.21.0.3 //ip consulserver02
 ```
+
+13. Configuring first consul client
+
+```
+docker exec -it consulclient01 sh
+mkdir /var/lib/consul
+ifconfig //get ip
+consul agent -bind=172.21.0.5 -data-dir=/var/lib/consul -config-dir=/etc/consul.d
+```
+
+14. Join client in the cluster
+
+```
+docker exec -it consulclient01 sh
+consul members
+consul join 172.21.0.4
+```
