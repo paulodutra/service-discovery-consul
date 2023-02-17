@@ -206,3 +206,16 @@ nginx -s reload
 curl localhost
 dig @localhost -p 8600 nginx.service.consul
 ```
+
+26.
+
+```
+docker exec -it consulserver01 sh
+consul agent -config-dir=/etc/consul.d
+
+docker exec -it consulserver02 sh
+consul agent -config-dir=/etc/consul.d
+
+docker exec -it consulserver03 sh
+consul agent -config-dir=/etc/consul.d
+```
