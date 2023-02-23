@@ -207,7 +207,7 @@ curl localhost
 dig @localhost -p 8600 nginx.service.consul
 ```
 
-26.
+26. Running consul in servers
 
 ```
 docker exec -it consulserver01 sh
@@ -218,4 +218,29 @@ consul agent -config-dir=/etc/consul.d
 
 docker exec -it consulserver03 sh
 consul agent -config-dir=/etc/consul.d
+```
+
+27. Generate encrypt key for consul server
+
+```
+consul keygen
+```
+
+28. Installing TCP dump tool
+
+```
+apk add tcpdump
+```
+
+29. View specific port in tcpdump 
+
+```
+tcpdump -i eth0 -an port 8301 -A
+```
+
+30. Set user interface consul
+
+```
+docker exec -it consulserver03 sh
+consul agent -config-dir=/etc/consul.d - ui
 ```
